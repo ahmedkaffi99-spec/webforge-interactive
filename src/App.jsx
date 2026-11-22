@@ -1,61 +1,25 @@
-import { useState, useRef } from 'react';
-import { ArrowDown, ArrowRight, ArrowLeft, ArrowUpRight, Menu, X, Sparkles, Orbit, Layers3, MousePointer2 } from 'lucide-react';
-import InteractiveScene from './components/InteractiveScene.jsx';
-
-const concepts = [
-  { id: '01', name: 'ORBIT', category: 'Digital object / 3D', copy: 'A living object built from light, movement and curiosity.', theme: 0 },
-  { id: '02', name: 'FLUX', category: 'Interaction / UI', copy: 'An interface that responds, bends and breathes with every touch.', theme: 1 },
-  { id: '03', name: 'NOVA', category: 'Experience / Web', copy: 'A glimpse of the internet as an immersive space.', theme: 2 }
-];
-
 export default function App() {
-  const [active, setActive] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const swipeX = useRef(null);
-  const concept = concepts[active];
-  const move = (step) => setActive((v) => (v + step + concepts.length) % concepts.length);
-  const swipeStart = (e) => { swipeX.current = e.touches?.[0]?.clientX ?? null; };
-  const swipeEnd = (e) => {
-    if (swipeX.current == null) return;
-    const dx = (e.changedTouches?.[0]?.clientX ?? swipeX.current) - swipeX.current;
-    if (Math.abs(dx) > 40) move(dx < 0 ? 1 : -1);
-    swipeX.current = null;
+  const styles = {
+    page: { minHeight: '100vh', background: '#070b14', color: '#f5f7fb', fontFamily: 'system-ui, sans-serif', overflow: 'hidden' },
+    header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px clamp(20px, 7vw, 80px)', borderBottom: '1px solid rgba(255,255,255,.08)' },
+    brand: { fontWeight: 800, letterSpacing: '.14em', fontSize: 14 },
+    nav: { display: 'flex', gap: 22, color: '#aab4c8', fontSize: 13 },
+    hero: { padding: '70px clamp(20px, 7vw, 80px) 35px', minHeight: '78vh', position: 'relative', display: 'flex', alignItems: 'center' },
+    title: { fontSize: 'clamp(48px, 11vw, 100px)', lineHeight: .98, letterSpacing: '-.07em', margin: '24px 0', position: 'relative', zIndex: 2 },
+    copy: { maxWidth: 390, color: '#aab4c6', fontSize: 15, lineHeight: 1.8, position: 'relative', zIndex: 2 },
+    art: { position: 'absolute', width: 'min(78vw, 580px)', height: 'min(78vw, 580px)', right: '2%', top: '50%', transform: 'translateY(-50%)', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fff 0%, #9b8cff 8%, #493a96 30%, rgba(7,11,20,0) 68%)', opacity: .85, pointerEvents: 'none' },
+    btn: { marginTop: 26, display: 'inline-block', background: '#d7f5ff', color: '#07101b', borderRadius: 30, padding: '14px 20px', fontWeight: 700, textDecoration: 'none', fontSize: 13 },
+    section: { padding: '65px clamp(20px, 7vw, 80px)', background: '#0b101c' },
+    sectionTitle: { fontSize: 'clamp(36px, 7vw, 64px)', lineHeight: 1.05, letterSpacing: '-.06em', margin: '20px 0' },
+    card: { border: '1px solid rgba(255,255,255,.12)', borderRadius: 16, padding: 28, background: '#101827', marginTop: 30 },
+    kicker: { color: '#aab4c6', fontSize: 11, letterSpacing: '.16em', fontFamily: 'monospace' }
   };
-  const scrollProjects = () => document.getElementById('experiments')?.scrollIntoView({ behavior: 'smooth' });
-  return <main id="top">
-    <header className="topbar">
-      <a className="brand" href="#top"><span className="brand-mark"><span /></span>WEB<span className="brand-light">FORGE</span></a>
-      <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
-        <a href="#experiments" onClick={() => setMenuOpen(false)}>Experiments</a><a href="#studio" onClick={() => setMenuOpen(false)}>Studio</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
-      </nav>
-      <a className="top-cta" href="#contact">Let's talk <ArrowUpRight size={15}/></a>
-      <button className="menu-toggle" onClick={() => setMenuOpen(v => !v)} aria-label="Toggle navigation">{menuOpen ? <X/> : <Menu/>}</button>
-    </header>
-    <section className="hero" id="top-hero">
-      <div className="hero-grid"/>
-      <div className="hero-content">
-        <div className="hero-kicker"><span className="status-dot"/> DIGITAL PLAYGROUND — 2026</div>
-        <h1 className="hero-title">Build beyond<br/><span>the ordinary.</span></h1>
-        <p className="hero-copy">We turn ideas into immersive digital experiences. Less predictable. More playful. Impossible to ignore.</p>
-        <div className="hero-actions"><button className="primary-btn" onClick={scrollProjects}>Explore the experience <ArrowUpRight size={17}/></button><button className="round-btn" onClick={() => move(1)} aria-label="Next experience"><ArrowRight size={19}/></button></div>
-      </div>
-      <div className="hero-art">
-        <InteractiveScene theme={concept.theme}/>
-        <div className="orbit-label label-top"><span>INTERACTIVE / CSS</span><span className="label-line"/></div>
-        <div className="orbit-label label-side"><span>DRAG TO<br/>ROTATE</span></div><div className="art-index">WF—{concept.id}</div>
-      </div>
-      <div className="hero-foot"><span>SCROLL TO DISCOVER <ArrowDown size={14}/></span><span>INTERACTIVE / 3D</span></div>
-    </section>
-    <section className="showcase" id="experiments">
-      <div className="section-head"><div><div className="mini-kicker">SELECTED EXPERIMENTS</div><h2>Different by<br/>design.</h2></div><p>Move through ideas. Every interaction is an invitation to explore.</p></div>
-      <div className="carousel-card" onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
-        <div className={`card-art card-theme-${concept.theme}`}><InteractiveScene theme={concept.theme}/><span className="card-watermark">{concept.name}</span></div>
-        <div className="card-info"><div><span className="card-num">{concept.id} / 03</span><h3>{concept.name}</h3><p>{concept.category}</p><p className="card-description">{concept.copy}</p></div><div className="carousel-controls"><button onClick={() => move(-1)} aria-label="Previous"><ArrowLeft size={19}/></button><button onClick={() => move(1)} aria-label="Next"><ArrowRight size={19}/></button></div></div>
-      </div>
-      <div className="slide-dots">{concepts.map((item,i)=><button key={item.id} className={i===active?'dot active':'dot'} onClick={()=>setActive(i)} aria-label={`Go to concept ${i+1}`}/>)}</div>
-    </section>
-    <section className="manifesto" id="studio"><div className="mini-kicker">OUR PLAYGROUND</div><h2>Curiosity is our<br/><span>favorite tool.</span></h2><div className="manifesto-bottom"><p>WebForge is a playground for ideas, where design meets technology and the web becomes something you can feel. We build with intention, experiment without fear and obsess over the tiny details that make an experience memorable.</p><div className="manifesto-icons"><div><Orbit/><span>Motion</span></div><div><Layers3/><span>Depth</span></div><div><MousePointer2/><span>Play</span></div></div></div></section>
-    <section className="contact" id="contact"><div className="mini-kicker">HAVE AN IDEA?</div><h2>Let's make<br/>something <span>matter.</span></h2><a className="contact-link" href="mailto:hello@webforge.studio">Start a conversation <ArrowUpRight/></a></section>
-    <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><span/></span>WEB<span className="brand-light">FORGE</span></a><span>© 2026 WEBFORGE EXPERIMENTS</span><span>MADE FOR THE CURIOUS <Sparkles size={13}/></span></footer>
-  </main>;
+  return <div style={styles.page}>
+    <header style={styles.header}><div style={styles.brand}>◈ WEBFORGE</div><nav style={styles.nav}><a style={{color:'inherit',textDecoration:'none'}} href="#experiments">Experiments</a><a style={{color:'inherit',textDecoration:'none'}} href="#studio">Studio</a><a style={{color:'inherit',textDecoration:'none'}} href="#contact">Contact</a></nav></header>
+    <section style={styles.hero}><div style={styles.art}/><div style={{maxWidth:640,position:'relative'}}><div style={styles.kicker}>DIGITAL PLAYGROUND — 2026</div><h1 style={styles.title}>Build beyond<br/><span style={{color:'#9be7ff'}}>the ordinary.</span></h1><p style={styles.copy}>We turn ideas into immersive digital experiences. Less predictable. More playful. Impossible to ignore.</p><a href="#experiments" style={styles.btn}>Explore the experience ↗</a></div></section>
+    <section id="experiments" style={styles.section}><div style={styles.kicker}>SELECTED EXPERIMENTS</div><h2 style={styles.sectionTitle}>Different by<br/>design.</h2><p style={styles.copy}>Move through ideas. Every interaction is an invitation to explore.</p><div style={styles.card}><div style={styles.kicker}>01 / 03 — ORBIT</div><h2 style={{fontSize:30,margin:'14px 0'}}>A digital object made of light.</h2><p style={styles.copy}>A living object built from light, movement and curiosity.</p></div><div style={styles.card}><div style={styles.kicker}>02 / 03 — FLUX</div><h2 style={{fontSize:30,margin:'14px 0'}}>Interfaces that breathe.</h2><p style={styles.copy}>An interface that responds, bends and breathes with every touch.</p></div><div style={styles.card}><div style={styles.kicker}>03 / 03 — NOVA</div><h2 style={{fontSize:30,margin:'14px 0'}}>A web of possibility.</h2><p style={styles.copy}>A glimpse of the internet as an immersive space.</p></div></section>
+    <section id="studio" style={{...styles.section,background:'#070b14'}}><div style={styles.kicker}>OUR PLAYGROUND</div><h2 style={styles.sectionTitle}>Curiosity is our<br/><span style={{color:'#9be7ff'}}>favorite tool.</span></h2><p style={{...styles.copy,maxWidth:560}}>WebForge is a playground for ideas, where design meets technology and the web becomes something you can feel. We build with intention, experiment without fear and obsess over the tiny details that make an experience memorable.</p></section>
+    <section id="contact" style={{...styles.section,background:'#d7f5ff',color:'#07101b'}}><div style={{...styles.kicker,color:'#4e6275'}}>HAVE AN IDEA?</div><h2 style={styles.sectionTitle}>Let's make<br/>something matter.</h2><a style={{...styles.btn,background:'#07101b',color:'#d7f5ff'}} href="mailto:hello@webforge.studio">Start a conversation ↗</a></section>
+    <footer style={{padding:'28px clamp(20px, 7vw, 80px)',display:'flex',justifyContent:'space-between',gap:15,flexWrap:'wrap',fontSize:10,letterSpacing:'.1em',color:'#7e899c'}}><strong style={{color:'#f5f7fb'}}>WEBFORGE</strong><span>© 2026 WEBFORGE EXPERIMENTS</span></footer>
+  </div>;
 }
